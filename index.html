@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sun, Earth, and Moon</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: black;
+            height: 100vh;
+            overflow: hidden;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="solarCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('solarCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Set canvas to full-screen size
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const sun = { radius: 50, color: 'yellow' };
+        const earth = { distance: 200, radius: 15, color: 'blue', speed: 0.01, angle: 0 };
+        const moon = { distance: 40, radius: 5, color: 'white', speed: 0.05, angle: 0 };
+
+        function drawSun(centerX, centerY) {
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, sun.radius, 0, Math.PI * 2);
+            ctx.fillStyle = sun.color;
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        function drawEarth(centerX, centerY) {
+            earth.x = centerX + earth.distance * Math.cos(earth.angle);
+            earth.y = centerY + earth.distance * Math.sin(earth.angle);
+
+            ctx.beginPath();
+            ctx.arc(earth.x, earth.y, earth.radius, 0, Math.PI * 2);
+            ctx.fillStyle = earth.color;
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        function drawMoon() {
+            const moonX = earth.x + moon.distance * Math.cos(moon.angle);
+            const moonY = earth.y + moon.distance * Math.sin(moon.angle);
+
+            ctx.beginPath();
+            ctx.arc(moonX, moonY, moon.radius, 0, Math.PI * 2);
+            ctx.fillStyle = moon.color;
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Center the solar system in the middle of the canvas
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            // Draw Sun, Earth, and Moon
+            drawSun(centerX, centerY);
+            drawEarth(centerX, centerY);
+            drawMoon();
+
+            // Update angles for movement
+            earth.angle += earth.speed;
+            moon.angle += moon.speed;
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+</html>
